@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hitman Outfit Tracker</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #222;
+      color: #eee;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    select {
+      display: block;
+      margin: 0 auto 20px auto;
+      padding: 8px 12px;
+      font-size: 1rem;
+      border-radius: 5px;
+      border: none;
+      background: #444;
+      color: #eee;
+    }
+
+    .progress {
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .sublocation {
+      background: #333;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .sublocation h2 {
+      border-bottom: 1px solid #555;
+      padding-bottom: 5px;
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+      color: #ddd;
+    }
+
+    label {
+      display: block;
+      margin: 6px 0;
+      cursor: pointer;
+    }
+
+    input[type="checkbox"] {
+      transform: scale(1.2);
+      margin-right: 8px;
+    }
+
+    ::selection {
+      background: #555;
+    }
+  </style>
+</head>
+<body>
+  <h1>Hitman Outfit Tracker</h1>
+
+  <select id="locationSelect">
+    <option value="sapienza">Sapienza, Italy</option>
+    <option value="marrakesh">Marrakesh, Morocco</option>
+    <option value="bangkok">Bangkok, Thailand</option>
+    <option value="colorado">Colorado, USA</option>
+    <option value="colorado">Hokkaido, Japan</option>
+  </select>
+
+  <div class="progress" id="progressCounter">Loading...</div>
+
+  <div id="outfitContainer"></div>
+
+  <script>
+    const data = {
+      sapienza: {
+        "Mansion": [
+          "Butler (Mansion entrance)",
+          "Assistant Chef (Mansion kitchen)",
+          "Mansion Chef (Mansion kitchen)",
+          "House Cleaning (Everywhere)",
+          "Mansion Staff (Everywhere)",
+          "Gardener (Mansion back garden)",
+          "Mansion Security (Everywhere)",
+          "Roberto Vargas (Mansion back garden)",
+          "Plague Doctor (Observatory)",
+          "Green Plumber (Near wine cellar)"
+        ],
+        "Bio Lab": [
+          "Hazmat Suit (Virus chamber entrance)",
+          "Bio Lab Scientist (Everywhere)",
+          "Bio Lab Security (Everywhere)"
+        ],
+        "Sewer": [
+          "Red Plumber"
+        ],
+        "Church": [
+          "Church Staff (Graveyard)",
+          "Priest (Inside church, usually back rooms or confession box)",
+          "Bodyguard (Outside morgue)"
+        ],
+        "Town": [
+          "Dr. Oscar Lafayette (Outside ice cream shop)",
+          "Bohemian (Hippie's apartment, above ice cream shop)",
+          "Waiter (Ice cream shop)",
+          "Private Detective (Old town, on a bench)",
+          "Street Performer (Beach square)",
+          "Store Clerk (Hairdresser's)",
+          "Delivery Guy (Car crash site)",
+          "Cyclist (Car crash site)"
+        ]
+      },
+      marrakesh: {
+        "Armed Guards": [
+          "Military soldier (On the streets)",
+          "Elite soldier (School)",
+          "Military officer (School)",
+          "Consulate security (Consulate)",
+          "Bodyguard (Outside Shisha cafe)"
+        ],
+        "Civilians": [
+          "Prisoner (School)",
+          "Consulate intern (Street near Shisha cafe or carpet shops area)",
+          "Consulate janitor (Consulate)",
+          "Masseur (Consulate)",
+          "Headmaster (Rooftop near the school)",
+          "Handyman (On the streets)",
+          "Waiter (Market square)",
+          "Cameraman (Shisha cafe)",
+          "Fortune teller (Outside electronics street)",
+          "Local printing crew (Courtyard)",
+          "Food vendor (Market square)",
+          "Shopkeeper (Carpet shops area)"
+        ]
+      },
+      bangkok: {
+        "Armed Guards": [
+          "Hotel Security (Stock room)",
+          "Jordan Cross Bodyguard (Recording studio)"
+        ],
+        "Civilians": [
+          "Waiter (Staff room, basement)",
+          "Groundskeeper (Laundry room, basement)",
+          "Kitchen Staff (Laundry room, basement)",
+          "Exterminator (Stock room)",
+          "Hotel Staff (Stock room)",
+          "Abel de Silva (Beauty camberwell lounge)",
+          "Recording Crew (Recording studio)",
+          "Stalker (Morgan's roof garden)"
+        ]
+      },
+      colorado: {
+        "Armed Guards": [
+          "Explosives Specialist (Demolition range)",
+          "Militia Soldier (Near garages)",
+          "Militia Cook (North orchard)",
+          "Militia Technician (Garage)",
+          "Militia Spec Ops (Barracks)",
+          "Point Man (Barracks)",
+          "Militia Elite (Inside one of the lorries outside the mansion)",
+          "Hacker (Hacker room)"
+        ],
+        "Misc": [
+          "Scarecrow (North orchard)"
+        ]
+      },
+      hokkaido: {
+        "Armed Guards": [
+          "Bodyguard (Yuki's room)",
+          "Resort Security (Security room)"
+        ],
+        "Civilians": [
+          "VIP Patient (Dexter) (Amos Dexter's room)",
+          "VIP Patient (Portman) (Toilets)",
+          "Hospital Director (Toilets)",
+          "Yoga Instructor (Maintenance room)",
+          "Resort Staff (Staff area, looking throught pond window)",
+          "Handyman (Staff area, looking throught pond window)",
+          "Chef (Kitchen)",
+          "Helicopter Pilot (Guard room)",
+          "Chief Surgeon (Guard room)",
+          "Surgeon (Robot surgery control)",
+          "Motorcyclist (Morgue)",
+          "Morgue Doctor (Morgue)",
+          "Doctor (Intensive care supervision)",
+          "Baseball Uniform (Director's office, in display case)"
+        ]
+      }
+    };
+
+    const locationSelect = document.getElementById("locationSelect");
+    const outfitContainer = document.getElementById("outfitContainer");
+    const progressCounter = document.getElementById("progressCounter");
+
+    function updateProgress(location) {
+      const total = document.querySelectorAll('#outfitContainer input[type="checkbox"]').length;
+      const checked = document.querySelectorAll('#outfitContainer input[type="checkbox"]:checked').length;
+      progressCounter.textContent = `Progress: ${checked}/${total} outfits collected`;
+    }
+
+    function renderOutfits(location) {
+      outfitContainer.innerHTML = "";
+      const locData = data[location];
+
+      for (const [subLoc, outfits] of Object.entries(locData)) {
+        const subDiv = document.createElement("div");
+        subDiv.className = "sublocation";
+        const h2 = document.createElement("h2");
+        h2.textContent = subLoc;
+        subDiv.appendChild(h2);
+
+        outfits.forEach((outfit, index) => {
+          const key = `${location}_${subLoc}_${index}`;
+          const label = document.createElement("label");
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.dataset.key = key;
+          checkbox.checked = localStorage.getItem(key) === "true";
+
+          checkbox.addEventListener("change", () => {
+            localStorage.setItem(key, checkbox.checked);
+            updateProgress(location);
+          });
+
+          label.appendChild(checkbox);
+          label.append(` ${outfit}`);
+          subDiv.appendChild(label);
+        });
+
+        outfitContainer.appendChild(subDiv);
+      }
+
+      updateProgress(location);
+    }
+
+    locationSelect.addEventListener("change", () => {
+      renderOutfits(locationSelect.value);
+    });
+
+    renderOutfits(locationSelect.value);
+  </script>
+</body>
+</html>
