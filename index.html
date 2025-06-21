@@ -71,11 +71,13 @@
   <h1>Hitman Outfit Tracker</h1>
 
   <select id="locationSelect">
+    <option value="ica_facility">ICA Facility, Classified </option>
+    <option value="paris">Paris, France</option>
     <option value="sapienza">Sapienza, Italy</option>
     <option value="marrakesh">Marrakesh, Morocco</option>
     <option value="bangkok">Bangkok, Thailand</option>
     <option value="colorado">Colorado, USA</option>
-    <option value="colorado">Hokkaido, Japan</option>
+    <option value="hokkaido">Hokkaido, Japan</option>
   </select>
 
   <div class="progress" id="progressCounter">Loading...</div>
@@ -84,6 +86,30 @@
 
   <script>
     const data = {
+      ica_facility: {
+      "Armed Guards": [
+        "Airfield Security (Everywhere)",
+        "Soviet Soldier (Everywhere)",
+        "Hangar Mechanic (Changing rooms)",
+        "KGB officer (Usually walking around the first floor)"
+      ]
+    },
+    paris: {
+      "Armed Guards": [
+        "CICADA Bodyguard (Found throughout the palace)",
+        "Security Guard (Found throughout the palace)"
+      ],
+      "Civilians": [
+        "Auction Staff (Found throughout the auction floor)",
+        "Chef (Found in the basement)",
+        "Event Crew (Found throughout the palace)",
+        "Palace Staff (Found throughout the lower floors)",
+        "Stylist (Found in the makeup area)",
+        "Helmut Kruger (In the back palace gardens or around the makeup area)",
+        "Sheikh Salman al-Ghazali (Found in the room to the right of the entrance stairs)",
+        "Vampire Magician (Found in empty room in attic)"
+      ]
+    },
       sapienza: {
         "Mansion": [
           "Butler (Mansion entrance)",
